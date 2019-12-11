@@ -1,0 +1,98 @@
+<?php
+session_start();
+require '../includes/connect.inc.php';
+
+// กำหนดวันที่ปัจจุบัน
+$today	=	date("Y-m-d H:i:s");
+
+if ($_GET["encrypt"] == '0') {
+	echo "hello!";
+}
+
+// เตรียมข้อมูลที่ได้จากฐานข้อมูลกลาง
+$attribs		=	$_GET["attribs"];
+$attribs		=	preg_replace(array("/\[/", "/\]/"),'',$attribs);
+$attribs		=	preg_replace("/\'/",'"',$attribs);
+$attribs		=	json_decode($attribs, true);
+
+// นำข้อมูลที่ได้ ออกมาเก็บลงในแต่ละตัวแปร
+$uid			=	$attribs['uid'];									//Account บัญชีอินเตอร์เน็ตร
+$cn				=	$attribs['cn'];										//ชื่อภาษาอังกฤษ
+$sn				=	$attribs['sn'];										//นามสกุลภาษาอังกฤษ
+$uidNumber		=	$attribs['uidNumber'];
+$gidNumber		=	$attribs['gidNumber'];
+$firstNameThai	=	$attribs['firstNameThai'];							//ชื่อภาษาไทย
+$lastNameThai	=	$attribs['lastNameThai'];							//นามสกุลภาษาไทย
+$campusID		=	$attribs['campusID'];								//h=khonkaen
+$personalId		=	$attribs['personalId'];								//เลขบัตรประจำตัวประชาชน
+$prename		=	$attribs['prename'];								//คำนำหน้า
+$prenameId		=	$attribs['prenameId'];
+$campus			=	$attribs['campus'];									//วิทยาเขต : Khonkaen
+$phoneNumber	=	preg_replace("/\-/",'',$attribs['phoneNumber']);	//หมายเลขโทรศัพท์
+$studentId		=	$attribs['studentId'];								//รหัสนักศึกษา
+$faculty		=	preg_replace("/คณะ/",'',$attribs['faculty']);		//คณะ
+$program		=	preg_replace("/สาขาวิชา /",'',$attribs['program']);	//สาขาวิชา
+if ($attribs['title'] == 'Teachers') {
+	$program		=	preg_replace("/สาขาวิชา/",'',$attribs['department']);
+}
+$curriculum		=	$attribs['curriculum'];								//คุณวุฒิ
+$regularYear	=	$attribs['regularYear'];
+$facultyId		=	$attribs['facultyId'];
+$programId		=	$attribs['programId'];
+$curriculumId	=	$attribs['curriculumId'];
+$description	=	$attribs['description'];
+$displayName	=	$attribs['displayName'];
+$mail			=	$attribs['mail'];									//อีเมล์มหาวิทยาลัย
+$accountStatus	=	$attribs['accountStatus'];
+$title			=	$attribs['title'];
+
+// ตรวจสอบจากในฐานข้อมูล ว่ามีข้อมูลของ Account นี้หรือไม่
+$check_username = $con->query("SELECT * FROM `account` WHERE account_username = '$uid'");
+$row = $check_username->fetch();
+
+// ถ้ามีอยู่แล้ว ให้อัพเดทข้อมูล
+if ($row) {
+	$con->query("UPDATE `account` SET 
+		`account_username`='$uid',
+		`account_prefix`='$prename',
+		`account_firstname`='$firstNameThai',
+		`account_lastname`='$lastNameThai',
+		`account_degree`='$curriculum',
+		`account_faculty`='$faculty',
+		`account_department`='$program'
+		WHERE account_username = '$uid'");
+}
+
+// ถ้ายังไม่มี ให้เพิ่มเข้าไปใหม่
+else{
+	$con->query("INSERT INTO `account`(`account_username`, `account_id`, `account_idno`, `account_prefix`, `account_firstname`, `account_lastname`, `account_email`, `account_mobile`, `account_degree`, `account_faculty`, `account_department`, `account_register`) VALUES ('$uid','$studentId','$personalId','$prename','$firstNameThai','$lastNameThai','$mail','$phoneNumber','$curriculum','$faculty','$program','$today')");
+}
+
+$account		= $con->query("SELECT * FROM `account` WHERE account_username = '$uid'");
+$row_account	= $account->fetch();
+
+// เก็บข้อมูลลงใน Session
+$_SESSION["account_username"]	=	$row_account["account_username"];
+$_SESSION["account_id"]			=	$row_account["account_id"];
+$_SESSION["account_prefix"]		=	$row_account["account_prefix"];
+$_SESSION["account_firstname"]	=	$row_account["account_firstname"];
+$_SESSION["account_lastname"]	=	$row_account["account_lastname"];
+$_SESSION["account_birthday"]	=	$row_account["account_birthday"];
+$_SESSION["level_id"]			=	$row_account["level_id"];
+
+$_SESSION["account_fn_01"]		=	$row_account["account_fn_01"];
+$_SESSION["account_fn_02"]		=	$row_account["account_fn_02"];
+$_SESSION["account_fn_03"]		=	$row_account["account_fn_03"];
+$_SESSION["account_fn_04"]		=	$row_account["account_fn_04"];
+$_SESSION["account_fn_05"]		=	$row_account["account_fn_05"];
+$_SESSION["account_fn_06"]		=	$row_account["account_fn_06"];
+$_SESSION["account_fn_07"]		=	$row_account["account_fn_07"];
+$_SESSION["account_fn_08"]		=	$row_account["account_fn_08"];
+
+if (!isset($_SESSION["level_id"]) OR !isset($_SESSION["account_birthday"])) {
+	header("Location: ../page_profile.php?alerts=warning&msg=incomplete");
+}
+
+else{
+	header("Location: ../index.php");
+}

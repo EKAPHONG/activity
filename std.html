@@ -1,0 +1,60 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <table>
+        <tr>
+            <td rowspan='4'>
+                <img border='0' src='images/logo_RMUTI.png' width='80'>
+            </td>
+            <td>
+                เลขประจำตัวนักศึกษา
+            </td>
+            <td>
+                :
+            </td>
+            <td>
+                " . $row_profile["account_idno"] . "
+            </td>
+        </tr>
+        <tr>
+            <td>
+                ชื่อ - สกุล
+            </td>
+            <td>
+                :
+            </td>
+            <td>
+                " . $row_profile["account_prefix"] . $row_profile["account_firstname"] . " " .
+                $row_profile["account_lastname"] . "
+            </td>
+        </tr>
+        <tr>
+            <td>
+                คณะ
+            </td>
+            <td>
+                :
+            </td>
+            <td>
+                " . $row_profile["account_faculty"] . "
+            </td>
+        </tr>
+        <tr>
+            <td>
+                สาขาวิชา
+            </td>
+            <td>
+                :
+            </td>
+            <td>
+                " . $row_profile["account_department"] . "
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
