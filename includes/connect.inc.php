@@ -4,8 +4,8 @@ date_default_timezone_set('Asia/Bangkok');
 $servername = "localhost";
 #$servername = "tangtrakul.no-ip.org:3306";
 $database = "actdb";
-$username = "test1";
-$password = "0z0&eI8z";
+$username = "actdb";
+$password = "vucm3ltMXs3Y2UZ4";
 
 try {
     $con = new PDO("mysql:host=$servername;dbname=$database", $username, $password);

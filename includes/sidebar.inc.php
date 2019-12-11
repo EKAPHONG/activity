@@ -1,6 +1,3 @@
-<?php
-include '../login/config/config.php';
-?>
 <aside class="main-sidebar">
 
 	<!-- sidebar: style can be found in sidebar.less -->
@@ -22,11 +19,7 @@ include '../login/config/config.php';
 			}
 			else{
 				?>
-				<form action="http://service.eng.rmuti.ac.th/eng-login/login/" method="POST">
-					<input type="hidden" name="id" value="<?php echo($app_id); ?>">
-					<input type="hidden" name="secret" value="<?php echo($secret); ?>">
-					<button type="submit" class="btn btn-block btn-warning btn-lg"><i class="fas fa-sign-in-alt"></i> <span>เข้าสู่ระบบ</span></button>
-				</form>
+				<a class="btn btn-block btn-warning btn-lg" href="login/login.php" role="button" style="color: white;"><i class='fas fa-sign-in-alt'></i> เข้าสู่ระบบ</a>
 				<?php
 			}
 			?>

@@ -4,6 +4,7 @@ session_start();
 require 'includes/config.inc.php';
 require 'includes/connect.inc.php';
 require 'includes/dateThai.inc.php';
+
 $page = basename($_SERVER['PHP_SELF'], ".php");
 
 $activity	= $con->query("SELECT `activity_id`, `activity_date`, `activity_name`, `activity_unit` FROM `activity` WHERE `activity_date` >= '" . date("Y-m-d") . "' ORDER BY `activity_date` ASC LIMIT 0, 10");
